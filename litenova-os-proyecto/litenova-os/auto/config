@@ -1,0 +1,16 @@
+#!/bin/sh
+# Configuración de live-build para LiteNova OS (Debian 13 "trixie", amd64)
+set -e
+lb config noauto \
+  --distribution trixie \
+  --architectures amd64 \
+  --linux-flavours amd64 \
+  --archive-areas "main contrib non-free-firmware" \
+  --binary-images iso-hybrid \
+  --bootloaders "grub-efi,syslinux" \
+  --debian-installer none \
+  --iso-application "LiteNova OS" \
+  --iso-publisher "LiteNova OS project" \
+  --iso-volume "LITENOVA" \
+  --bootappend-live "boot=live components quiet splash locales=es_ES.UTF-8 keyboard-layouts=es timezone=Europe/Madrid username=litenova" \
+  "${@}"

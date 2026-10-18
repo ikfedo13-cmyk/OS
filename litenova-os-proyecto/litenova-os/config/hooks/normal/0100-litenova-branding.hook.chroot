@@ -1,0 +1,12 @@
+#!/bin/sh
+# Marca LiteNova en el sistema y añade Flathub. Se ejecuta dentro de la imagen.
+set -e
+cat > /etc/lsb-release <<'EOT'
+DISTRIB_ID=LiteNova
+DISTRIB_RELEASE=0.1
+DISTRIB_DESCRIPTION="LiteNova OS 0.1 (prototipo)"
+EOT
+sed -i 's/^PRETTY_NAME=.*/PRETTY_NAME="LiteNova OS 0.1 (basado en Debian)"/' /etc/os-release
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || true
+systemctl enable lightdm || true
+systemctl enable NetworkManager || true
