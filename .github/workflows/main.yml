@@ -10,19 +10,25 @@ jobs:
     container:
       image: debian:trixie
       options: --privileged
+    defaults:
+      run:
+        working-directory: litenova-os-proyecto/litenova-os
     steps:
       - name: Instalar git y certificados
         run: apt-get update && apt-get install -y git ca-certificates
+        working-directory: /
       - uses: actions/checkout@v4
+      - name: Dar permisos a los scripts
+        run: chmod +x build.sh auto/config config/hooks/normal/*
       - name: Construir ISO
-        run: ./build.sh
+        run: bash build.sh
       - name: Subir ISO
         uses: actions/upload-artifact@v4
         with:
           name: litenova-os-iso
           path: |
-            litenova-os-0.1-amd64.iso
-            SHA256SUMS
+            litenova-os-proyecto/litenova-os/litenova-os-0.1-amd64.iso
+            litenova-os-proyecto/litenova-os/SHA256SUMS
           retention-days: 7
           compression-level: 0
       - name: Subir registro (también si falla)
@@ -31,6 +37,6 @@ jobs:
         with:
           name: registro-build
           path: |
-            build.log
-            build-skipped.txt
+            litenova-os-proyecto/litenova-os/build.log
+            litenova-os-proyecto/litenova-os/build-skipped.txt
           if-no-files-found: ignore
