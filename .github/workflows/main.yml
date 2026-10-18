@@ -1,0 +1,36 @@
+name: Construir ISO de LiteNova OS
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    container:
+      image: debian:trixie
+      options: --privileged
+    steps:
+      - name: Instalar git y certificados
+        run: apt-get update && apt-get install -y git ca-certificates
+      - uses: actions/checkout@v4
+      - name: Construir ISO
+        run: ./build.sh
+      - name: Subir ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: litenova-os-iso
+          path: |
+            litenova-os-0.1-amd64.iso
+            SHA256SUMS
+          retention-days: 7
+          compression-level: 0
+      - name: Subir registro (también si falla)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: registro-build
+          path: |
+            build.log
+            build-skipped.txt
+          if-no-files-found: ignore
